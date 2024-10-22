@@ -1,3 +1,2 @@
 # Game-of-Chess
-Diya 
-Izzy 
+Team members: Diya, Izzy 
