@@ -1,3 +1,53 @@
+% PVR 20/07/92: Added entry declaration for move/5 (it is used in a bagof).
+
+% ------------------------------------------------------------------------------
+% Chess -- Mar. 1, 1987   Mike Carlton
+%
+% Adapted by Yu ("Tony") Zhang for ASU CSE 259, Fall 2019
+% Modified by Waqar Hassan Khan for ASU CSE 259, Spring 2024
+%
+% Standard rules of chess apply with the following exceptions:
+%  en passant captures are not allowed,
+%  pawns are promoted to queens only,
+%  draw by repetition or capture are not allowed,
+%  kings may castle out of or through check (but not into).
+%
+% Files are numbered a to h, ranks are numbered 1 to 8,
+% and white is assumed to play from the rank 1 side.
+% The program always plays black.
+%
+% Positions are specified with the structure: File-Rank. 
+% The board is a list containing two state structures of the form:
+%  state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), 
+%  state(black, BlackKing, BlackKingRook, BlackQueenRook),
+% followed by a list of the piece positions of the form: 
+%  piece(File-Rank, Color, Type),
+% where the state variables will be bound to an atom once the
+% corresponding piece has been moved.
+% A move is stored internally as: move(From_File-From_Rank, To_File-To_Rank).
+%
+% Commands available:
+%  Move:  entered in the form FRFR (where F is in a..h and R is in 1..8)
+%  board: prints the current board
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% "PlayerA" PlayerA moves first (white);
+% "PlayerB" PlayerB moves second (black);
+%
+% You should test with both PlayerA and PlayerB
+%
+% Competition will be based on the following parameters
+%
+%%%% IMPORTANT IMPORTANT IMPORTANT!!! MAKE SURE TO SET THESE SYSTEM VARIABLES
+% THE FOLLOWING EXAMPLES ARE FOR bash
+%-------------------------------------
+% export LOCALSZ=284000
+% export GLOBALSZ=1500000
+% export TRAILSZ=284000
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 /* this is the rule which we shall call from the console */
 main :-
     randomize,                       % Setting up the seed for random number generator
@@ -5,6 +55,7 @@ main :-
     play(InBoard),                   % Start playing
   fail.
 main.
+
 
 
 /* initial configuration of the chess board */
@@ -39,12 +90,13 @@ play(Board) :-
 		/* move playerA */
 		/* get_command asks the user for the move to be made. 
 		   modify this so that playerA moves on its own */
-    get_command(Command),
-    execute_command(Command, Board, NewBoard),
+    /*get_command(Command), */
+    execute_command(PlayerA, Board, NewBoard),
 
     /* move playerB */
     execute_command(playerB, NewBoard, NextNewBoard),
     play(NextNewBoard).
+
 
 
 /* getting command from the user so that playerA aka white can move */
@@ -67,6 +119,8 @@ execute_command(X, Board, _) :-     % Use to catch unexpected situations
     write('What?'),
     halt(0).
 
+
+
 /* ----------------------------------------------------------------------- */
 /* parameters */
 noise_level(800).        % Noisy level to avoid livelock
@@ -80,12 +134,81 @@ Rand is Number.               % Add random value to avoid deadlock
 /* ----------------------------------------------------------------------- */
 
 
+
 /* ----------------------------------------------------------------------- */
 /* WRITE YOUR CODE FOR TASK-2 HERE */
 /* TASK 2: IMPLEMENT playerA CODE HERE */
 /* MIMIC THE CODE FOR playerB */
 /* ----------------------------------------------------------------------- */
+% Strength assesses utility of the current game state for player based on its Color
+% Color will be black for playerB; OppositeColor is playerA (white)
+strengthA([state(_, _, _, _)|Board], Color, OppositeColor, Strength) :-
+    strengthA(Board, Color, OppositeColor, Strength), !.
+strengthA([piece(_, Color, Type)|Board], Color, OppositeColor, Strength) :-
+    valueA(Type, Value),
+    strengthA(Board, Color, OppositeColor, PartialStrength),
+    Strength is PartialStrength + Value, !.
+strengthA([piece(_, OppositeColor, Type)|Board], Color, OppositeColor,
+      Strength) :-
+    valueA(Type, Value),
+    strengthA(Board, Color, OppositeColor, PartialStrength),
+    Strength is PartialStrength - Value.
 
+
+ply_depthA(3).          % Depth of alpha-beta search
+
+
+% Define the utility function for playerA
+% MAKE SURE that the SUM of all pieces is smaller than 32000
+valueA(king, 10000) :- ! .
+valueA(queen,  900) :- ! .
+valueA(rook,   500) :- ! .
+valueA(knight, 300) :- ! .
+valueA(bishop, 300) :- ! .
+valueA(pawn,   100) :- ! .
+
+% PlayerB book moves, black
+/* should I change color first line state(white...) with black since the color is white*/
+bookA( [ state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % e2e4
+    state(black, BlackKing, BlackKingRook, BlackQueenRook), % respond with
+    piece(a-8, black, rook  ), piece(b-8, black, knight ),   % ...   e7e5
+    piece(c-8, black, bishop), piece(d-8, black, queen ),
+    piece(e-8, black, king  ), piece(f-8, black, bishop),
+    piece(g-8, black, knight ), piece(h-8, black, rook  ),
+    piece(a-7, black, pawn  ), piece(b-7, black, pawn  ),
+    piece(c-7, black, pawn  ), piece(d-7, black, pawn  ),
+    piece(e-7, black, pawn  ), piece(f-7, black, pawn  ),
+    piece(g-7, black, pawn  ), piece(h-7, black, pawn  ),
+    piece(a-1, white, rook  ), piece(b-1, white, knight ),
+    piece(c-1, white, bishop), piece(d-1, white, queen ),
+    piece(e-1, white, king  ), piece(f-1, white, bishop),
+    piece(g-1, white, knight ), piece(h-1, white, rook  ),
+    piece(a-2, white, pawn  ), piece(b-2, white, pawn  ),
+    piece(c-2, white, pawn  ), piece(d-2, white, pawn  ),
+    piece(f-2, white, pawn  ), piece(g-2, white, pawn  ),
+    piece(h-2, white, pawn  ), piece(e-4, white, pawn  ) ], e-7, e-5).
+
+
+% Code for alpha beta prunning
+% Player is playerB, Turn is the player whose turn is to play
+sufficientA(Player, Board, Turn, [], Depth, Alpha, Beta, Move, Val, Move, Val) :- !.
+sufficientA(Player, Board, Turn, Moves, Depth, Alpha, Beta, Move, Val, Move, Val) :-
+    Player \== Turn,        % It is the opponent turn to play, MIN node at Turn
+    Val < Alpha, !.         % Pruning the branch since it is not useful
+sufficientA(Player, Board, Turn, Moves, Depth, Alpha, Beta, Move, Val, Move, Val) :-
+    Player = Turn,          % It is the Player turn to play, MAX node at Turn
+    Val > Beta, !.          % Pruning the branch since it is not useful
+sufficientA(Player, Board, Turn, Moves, Depth, Alpha, Beta, Move, Val,
+    BestMove, BestVal) :-
+    new_bounds(Player, Turn, Alpha, Beta, Val, NewAlpha, NewBeta),
+    find_best(Player, Board, Turn, Moves, Depth, NewAlpha, NewBeta, Move1, Val1),
+    better_of(Player, Turn, Move, Val, Move1, Val1, BestMove, BestVal).
+
+
+% Code to collect moves given the current state Board
+% If Moves is empty, it should return FAIL.
+collect_movesB(Board, Color, Moves) :-
+    bagof(move(From, To), Piece^move(Board,From,To,Color,Piece), Moves).
 
 
 /* -------------------------- DO NOT OVERRIDE --------------------------- */
@@ -274,7 +397,7 @@ legal_move(Board, Color, From, To) :-
 
 
 in_check(Board, Color) :-
-  myMember(piece(KingSquare, Color, king), Board),
+  mymember(piece(KingSquare, Color, king), Board),
   opposite(Color, OppositeColor),
   move(Board, _, KingSquare, OppositeColor, _).
 
@@ -316,25 +439,25 @@ parse_move(Move, From_File-From_Rank, To_File-To_Rank) :-
     on_board(To_File-To_Rank).
  
 on_board(File-Rank) :-
-  myMember(File, [a, b, c, d, e, f, g, h]),
-  myMember(Rank, [1, 2, 3, 4, 5, 6, 7, 8]).
+  mymember(File, [a, b, c, d, e, f, g, h]),
+  mymember(Rank, [1, 2, 3, 4, 5, 6, 7, 8]).
 
 not_moved(Board, Color, king) :-
-  myMember(state(Color, King, _, _), Board), !,
+  mymember(state(Color, King, _, _), Board), !,
   var(King).
 not_moved(Board, Color, king, rook) :-
-  myMember(state(Color, _, KingRook, _), Board), !,
+  mymember(state(Color, _, KingRook, _), Board), !,
   var(KingRook).
 not_moved(Board, Color, queen, rook) :-
-  myMember(state(Color, _, _, QueenRook), Board), !,
+  mymember(state(Color, _, _, QueenRook), Board), !,
   var(QueenRook).
 
 update_state(Board, From, Color, king) :-    % Was king moved?
-  myMember(state(Color, king_moved, _, _), Board).
+  mymember(state(Color, king_moved, _, _), Board).
 update_state(Board, h-Rank, Color, rook) :-    % Was king rook moved?
-  myMember(state(Color, _, king_rook_moved, _), Board).
+  mymember(state(Color, _, king_rook_moved, _), Board).
 update_state(Board, a-Rank, Color, rook) :-    % Was queen rook moved?
-  myMember(state(Color, _, _, queen_rook_moved), Board).
+  mymember(state(Color, _, _, queen_rook_moved), Board).
 update_state(_, _, _, _).                       % Else, ignore
 
 
@@ -626,7 +749,7 @@ can_step(Board, -1, -1, F_File-F_Rank, T_File-T_Rank) :-
 
 
 occupied_by(Board, File-Rank, Color, Piece) :-
-  myMember(piece(File-Rank, Color, Piece), Board).
+  mymember(piece(File-Rank, Color, Piece), Board).
 
 
 plus_one(1, 2).  
@@ -666,9 +789,9 @@ minus_two(X,Y) :-
   plus_two(Y, X).
 
 
-myMember(X, [X|_]).
-myMember(X, [_|L]) :-
-  myMember(X, L).
+mymember(X, [X|_]).
+mymember(X, [_|L]) :-
+  mymember(X, L).
 
 opposite(white, black).
 opposite(black, white).
