@@ -169,8 +169,8 @@ valueA(pawn,   100) :- ! .
 
 % PlayerB book moves, black
 /* should I change color first line state(white...) with black since the color is white*/
-bookA( [ state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % e2e4
-    state(black, BlackKing, BlackKingRook, BlackQueenRook), % respond with
+bookA( [ state(black, BlackKing, BlackKingRook, BlackQueenRook), 
+    state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % respond with
     piece(a-8, black, rook  ), piece(b-8, black, knight ),   % ...   e7e5
     piece(c-8, black, bishop), piece(d-8, black, queen ),
     piece(e-8, black, king  ), piece(f-8, black, bishop),
@@ -207,7 +207,7 @@ sufficientA(Player, Board, Turn, Moves, Depth, Alpha, Beta, Move, Val,
 
 % Code to collect moves given the current state Board
 % If Moves is empty, it should return FAIL.
-collect_movesB(Board, Color, Moves) :-
+collect_movesA(Board, Color, Moves) :-
     bagof(move(From, To), Piece^move(Board,From,To,Color,Piece), Moves).
 
 
@@ -248,8 +248,8 @@ valueB(bishop, 300) :- ! .
 valueB(pawn,   100) :- ! .
 
 % PlayerB book moves, black
-bookB( [ state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % e2e4
-    state(black, BlackKing, BlackKingRook, BlackQueenRook), % respond with
+bookB( [ state(black, BlackKing, BlackKingRook, BlackQueenRook), 
+    state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % respond with
     piece(a-8, black, rook  ), piece(b-8, black, knight ),   % ...   e7e5
     piece(c-8, black, bishop), piece(d-8, black, queen ),
     piece(e-8, black, king  ), piece(f-8, black, bishop),
