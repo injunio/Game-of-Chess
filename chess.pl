@@ -174,7 +174,7 @@ bookA( [ state(black, BlackKing, BlackKingRook, BlackQueenRook),
     piece(a-2, white, pawn  ), piece(b-2, white, pawn  ),
     piece(c-2, white, pawn  ), piece(d-2, white, pawn  ),
     piece(f-2, white, pawn  ), piece(g-2, white, pawn  ),
-    piece(h-2, white, pawn  ), piece(e-4, white, pawn  ) ], e-7, e-5).
+    piece(h-2, white, pawn  ), piece(e-4, white, pawn  ) ], e-2, e-4).
 
 
 % Code for alpha beta prunning
