@@ -88,29 +88,17 @@ init_board([
 /* ----------------------------------------------------------------------- */
 play(Board) :-
 		/* move playerA */
-		/* get_command asks the user for the move to be made. 
-		   modify this so that playerA moves on its own */
-    /*get_command(Command), */
     execute_command(PlayerA, Board, NewBoard),
 
     /* move playerB */
     execute_command(playerB, NewBoard, NextNewBoard),
     play(NextNewBoard).
 
-
-
-/* getting command from the user so that playerA aka white can move */
-get_command(Command) :-
-    nl, write('white move -> '),
-    read(Command), !.
-  
-
-
 /* execute the move selected */
-execute_command(Move, Board, NewBoard) :-
+/*execute_command(Move, Board, NewBoard) :-
          parse_move(Move, From, To),
          move(Board, From, To, white, Piece),
-         make_move(Board, From, To, NewBoard), !.
+         make_move(Board, From, To, NewBoard), !. */
 
 execute_command(Player, Board, NewBoard) :-
     respond_to(Player, Board, NewBoard), !.
@@ -169,10 +157,9 @@ valueA(pawn,   100) :- ! .
 
 % PlayerB book moves, black
 % CHANGE BOOK B CODE TO FIT BOOK A 
-/* should I change color first line state(white...) with black since the color is white*/
-bookA( [ state(black, BlackKing, BlackKingRook, BlackQueenRook), 
-    state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % respond with
-    piece(a-8, black, rook  ), piece(b-8, black, knight ),   % ...   e7e5
+bookA( [ state(black, BlackKing, BlackKingRook, BlackQueenRook),
+  state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), 
+    piece(a-8, black, rook  ), piece(b-8, black, knight ),   
     piece(c-8, black, bishop), piece(d-8, black, queen ),
     piece(e-8, black, king  ), piece(f-8, black, bishop),
     piece(g-8, black, knight ), piece(h-8, black, rook  ),
