@@ -89,16 +89,9 @@ init_board([
 play(Board) :-
 		/* move playerA */
     execute_command(PlayerA, Board, NewBoard),
-
     /* move playerB */
     execute_command(playerB, NewBoard, NextNewBoard),
     play(NextNewBoard).
-
-/* execute the move selected */
-/*execute_command(Move, Board, NewBoard) :-
-         parse_move(Move, From, To),
-         move(Board, From, To, white, Piece),
-         make_move(Board, From, To, NewBoard), !. */
 
 execute_command(Player, Board, NewBoard) :-
     respond_to(Player, Board, NewBoard), !.
