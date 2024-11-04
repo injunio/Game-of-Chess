@@ -91,7 +91,7 @@ play(Board) :-
 		/* get_command asks the user for the move to be made. 
 		   modify this so that playerA moves on its own */
     /*get_command(Command), */
-    execute_command(PlayerA, Board, NewBoard),
+    execute_command(Command, Board, NewBoard),
 
     /* move playerB */
     execute_command(playerB, NewBoard, NextNewBoard),
@@ -100,9 +100,9 @@ play(Board) :-
 
 
 /* getting command from the user so that playerA aka white can move */
-get_command(Command) :-
-    nl, write('white move -> '),
-    read(Command), !.
+% get_command(Command) :-
+%     nl, write('white move -> '),
+%     read(Command), !.
   
 
 
@@ -168,7 +168,7 @@ valueA(knight, 300) :- ! .
 valueA(bishop, 300) :- ! .
 valueA(pawn,   100) :- ! .
 
-% PlayerB book moves, black
+% PlayerA book moves, white
 /* should I change color first line state(white...) with black since the color is white*/
 %mess around in this area to 
 bookA( [ state(black, BlackKing, BlackKingRook, BlackQueenRook), 
@@ -188,7 +188,7 @@ bookA( [ state(black, BlackKing, BlackKingRook, BlackQueenRook),
     piece(a-2, white, pawn  ), piece(b-2, white, pawn  ),
     piece(c-2, white, pawn  ), piece(d-2, white, pawn  ),
     piece(f-2, white, pawn  ), piece(g-2, white, pawn  ),
-    piece(h-2, white, pawn  ), piece(e-4, white, pawn  ) ], e-7, e-5).
+    piece(h-2, white, pawn  ), piece(e-4, white, pawn  ) ], e-2, e-4).
 
 
 % Code for alpha beta prunning
