@@ -34,6 +34,7 @@ init_board([
 /* ----------------------------------------------------------------------- */
 /* TASK 3 CODE */
 /* ----------------------------------------------------------------------- */
+% play(Board) plays the game 
 play(Board) :-
 		/* move playerA */
     execute_command(PlayerA, Board, NewBoard),
@@ -42,6 +43,7 @@ play(Board) :-
     execute_command(playerB, NewBoard, NextNewBoard),
     play(NextNewBoard).
 
+% executes each plater's command
 execute_command(Player, Board, NewBoard) :-
     respond_to(Player, Board, NewBoard), !.
 
@@ -401,10 +403,11 @@ report_move(Color, Board, From_File-From_Rank, To_File-To_Rank, Rating) :-
 /* ----------------------------------------------------------------------- */
 /* TASK 1 CODE */
 /* ----------------------------------------------------------------------- */
-drawSymbol(Symbol, 0).
+% tells what symbol to draw
+drawSymbol(Symbol, 0). 
 drawSymbol(Symbol, N) :- N > 0, write(Symbol), N1 is N - 1, drawSymbol(Symbol, N1).
 
-
+% draws the line 
 drawBorderLine(0) :- drawSymbol('+', 1), nl.
 drawBorderLine(Col) :-
   Col > 0,
@@ -412,14 +415,13 @@ drawBorderLine(Col) :-
   NewCol is Col - 1,
   drawBorderLine(NewCol).
 
-
+% creates the content cell 
 drawContentCell(BoardStates, Row, 0) :- drawSymbol('|', 1), nl.
 drawContentCell(BoardStates, Row, Col) :-
   Col > 0,
   drawSymbol('|', 1), drawCell(BoardStates, Row, Col),
   NewCol is Col - 1,
   drawContentCell(BoardStates, Row, NewCol).
-
 
 % finds whether the current cell has any white or black piece in it
 drawCell(BoardStates, Row, Col) :-
@@ -440,14 +442,14 @@ drawCell(BoardStates, Row, Col) :-
   \+ (myMember(piece(Name-Row, Color, Piece), BoardStates)),
   drawSymbol(' ', 4).
 
-  
+% draws labels 
 drawPair :-
   drawSymbol(' ', 4), drawSymbol('a', 1), drawSymbol(' ', 4), drawSymbol('b', 1),
   drawSymbol(' ', 4), drawSymbol('c', 1), drawSymbol(' ', 4), drawSymbol('d', 1),
   drawSymbol(' ', 4), drawSymbol('e', 1), drawSymbol(' ', 4), drawSymbol('f', 1),
   drawSymbol(' ', 4), drawSymbol('g', 1), drawSymbol(' ', 4), drawSymbol('h', 1).
 
-
+% names and associated columns 
 pair(a, 8).
 pair(b, 7).
 pair(c, 6).
@@ -457,6 +459,7 @@ pair(f, 3).
 pair(g, 2).
 pair(h, 1).
 
+% piece and associated label 
 pair(rook, r).
 pair(bishop, b).
 pair(king, k).
@@ -464,7 +467,7 @@ pair(pawn, p).
 pair(queen, q).
 pair(knight, n).
 
-
+%draws the board 
 drawBoard(BoardStates, 0, Col) :- drawSymbol(' ', 1), drawBorderLine(Col), drawPair.
 drawBoard(BoardStates, Row, Col) :-
   Row > 0,
@@ -475,7 +478,7 @@ drawBoard(BoardStates, Row, Col) :-
   NewRow is Row - 1,
   drawBoard(BoardStates, NewRow, Col).
 
-
+% prints the board 
 print_board(Board) :-
     drawBoard(Board, 8, 8), nl.
 /* ----------------------------------------------------------------------- */
