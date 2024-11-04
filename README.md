@@ -1,2 +1,2 @@
 # Game-of-Chess
-Team members: Diya, Izzy 
+Team members: Diya Shrivastava, Izzy 
