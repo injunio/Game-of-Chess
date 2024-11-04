@@ -36,30 +36,11 @@ init_board([
 /* ----------------------------------------------------------------------- */
 play(Board) :-
 		/* move playerA */
-		/* get_command asks the user for the move to be made. 
-		   modify this so that playerA moves on its own */
-    /*get_command(Command), */
     execute_command(PlayerA, Board, NewBoard),
 
     /* move playerB */
     execute_command(playerB, NewBoard, NextNewBoard),
     play(NextNewBoard).
-
-
-
-/* getting command from the user so that playerA aka white can move */
-% get_command(Command) :-
-%     nl, write('white move -> '),
-%     read(Command), !.
-  
-
-
-/* execute the move selected */
-% handles the user input which we no longer need
-% execute_command(Move, Board, NewBoard) :-
-%          parse_move(Move, From, To),
-%          move(Board, From, To, white, Piece),
-%          make_move(Board, From, To, NewBoard), !.
 
 execute_command(Player, Board, NewBoard) :-
     respond_to(Player, Board, NewBoard), !.
@@ -67,8 +48,6 @@ execute_command(Player, Board, NewBoard) :-
 execute_command(X, Board, _) :-     % Use to catch unexpected situations
     write('What?'),
     halt(0).
-
-
 
 /* ----------------------------------------------------------------------- */
 /* parameters */
@@ -85,12 +64,10 @@ Rand is Number.               % Add random value to avoid deadlock
 
 
 /* ----------------------------------------------------------------------- */
-/* WRITE YOUR CODE FOR TASK-2 HERE */
-/* TASK 2: IMPLEMENT playerA CODE HERE */
-/* MIMIC THE CODE FOR playerB */
+/* TASK 2 CODE */
 /* ----------------------------------------------------------------------- */
 % Strength assesses utility of the current game state for player based on its Color
-% Color will be black for playerB; OppositeColor is playerA (white)
+% Color will be white for playerA; OppositeColor is playerB (black)
 strengthA([state(_, _, _, _)|Board], Color, OppositeColor, Strength) :-
     strengthA(Board, Color, OppositeColor, Strength), !.
 strengthA([piece(_, Color, Type)|Board], Color, OppositeColor, Strength) :-
@@ -103,9 +80,7 @@ strengthA([piece(_, OppositeColor, Type)|Board], Color, OppositeColor,
     strengthA(Board, Color, OppositeColor, PartialStrength),
     Strength is PartialStrength - Value.
 
-
 ply_depthA(3).          % Depth of alpha-beta search
-
 
 % Define the utility function for playerA
 % MAKE SURE that the SUM of all pieces is smaller than 32000
@@ -117,11 +92,9 @@ valueA(bishop, 300) :- ! .
 valueA(pawn,   100) :- ! .
 
 % PlayerA book moves, white
-/* should I change color first line state(white...) with black since the color is white*/
-%mess around in this area to 
 bookA( [ state(black, BlackKing, BlackKingRook, BlackQueenRook), 
-    state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % respond with
-    piece(a-8, black, rook  ), piece(b-8, black, knight ),   % ...   e7e5
+    state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), 
+    piece(a-8, black, rook  ), piece(b-8, black, knight ),   
     piece(c-8, black, bishop), piece(d-8, black, queen ),
     piece(e-8, black, king  ), piece(f-8, black, bishop),
     piece(g-8, black, knight ), piece(h-8, black, rook  ),
@@ -137,7 +110,6 @@ bookA( [ state(black, BlackKing, BlackKingRook, BlackQueenRook),
     piece(c-2, white, pawn  ), piece(d-2, white, pawn  ),
     piece(f-2, white, pawn  ), piece(g-2, white, pawn  ),
     piece(h-2, white, pawn  ), piece(e-4, white, pawn  ) ], e-2, e-4).
-
 
 % Code for alpha beta prunning
 % Player is playerB, Turn is the player whose turn is to play
@@ -165,7 +137,6 @@ collect_movesA(Board, Color, Moves) :-
 strengthB([], _, _, Rand) :- noise_level(Level), random(0, Level, Number),
       Rand is Number.               % Add random value to avoid deadlock
 /* ----------------------------------------------------------------------- */
-
 
 
 /* ----------------------------------------------------------------------- */
@@ -428,9 +399,7 @@ report_move(Color, Board, From_File-From_Rank, To_File-To_Rank, Rating) :-
 
 
 /* ----------------------------------------------------------------------- */
-/* WRITE YOUR CODE FOR TASK-1 HERE */
-/* TASK 1: REPLACE THE print_board PREDICATE BELOW WITH YOUR CODE */
-/*         KEEP THE NAME print_board, JUST CHANGE THE IMPLEMENTATION*/
+/* TASK 1 CODE */
 /* ----------------------------------------------------------------------- */
 drawSymbol(Symbol, 0).
 drawSymbol(Symbol, N) :- N > 0, write(Symbol), N1 is N - 1, drawSymbol(Symbol, N1).
