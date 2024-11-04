@@ -159,22 +159,22 @@ valueA(pawn,   100) :- ! .
 % CHANGE BOOK B CODE TO FIT BOOK A 
 bookA( [ state(black, BlackKing, BlackKingRook, BlackQueenRook),
   state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), 
-    piece(a-8, black, rook  ), piece(b-8, black, knight ),   
+    piece(a-1, white, rook  ), piece(b-1, white, knight ),
+    piece(c-1, white, bishop), piece(d-1, white, queen ),
+    piece(e-1, white, king  ), piece(f-1, white, bishop),
+    piece(g-1, white, knight ), piece(h-1, white, rook ),
+    piece(a-2, white, pawn  ), piece(b-2, white, pawn  ),
+    piece(c-2, white, pawn  ), piece(d-2, white, pawn  ),
+    piece(f-2, white, pawn  ), piece(g-2, white, pawn  ),
+    piece(h-2, white, pawn  ), piece(e-4, white, pawn  ), 
+    piece(a-8, black, rook  ), piece(b-8, black, knight ),  
     piece(c-8, black, bishop), piece(d-8, black, queen ),
     piece(e-8, black, king  ), piece(f-8, black, bishop),
     piece(g-8, black, knight ), piece(h-8, black, rook  ),
     piece(a-7, black, pawn  ), piece(b-7, black, pawn  ),
     piece(c-7, black, pawn  ), piece(d-7, black, pawn  ),
     piece(e-7, black, pawn  ), piece(f-7, black, pawn  ),
-    piece(g-7, black, pawn  ), piece(h-7, black, pawn  ),
-    piece(a-1, white, rook  ), piece(b-1, white, knight ),
-    piece(c-1, white, bishop), piece(d-1, white, queen ),
-    piece(e-1, white, king  ), piece(f-1, white, bishop),
-    piece(g-1, white, knight ), piece(h-1, white, rook  ),
-    piece(a-2, white, pawn  ), piece(b-2, white, pawn  ),
-    piece(c-2, white, pawn  ), piece(d-2, white, pawn  ),
-    piece(f-2, white, pawn  ), piece(g-2, white, pawn  ),
-    piece(h-2, white, pawn  ), piece(e-4, white, pawn  ) ], e-2, e-4).
+    piece(g-7, black, pawn  ), piece(h-7, black, pawn  )], e-2, e-4).
 
 
 % Code for alpha beta prunning
@@ -236,8 +236,8 @@ valueB(bishop, 300) :- ! .
 valueB(pawn,   100) :- ! .
 
 % PlayerB book moves, black
-bookB( [ state(black, BlackKing, BlackKingRook, BlackQueenRook), 
-    state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % respond with
+bookB( [ state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % e2e4
+    state(black, BlackKing, BlackKingRook, BlackQueenRook), % respond with
     piece(a-8, black, rook  ), piece(b-8, black, knight ),   % ...   e7e5
     piece(c-8, black, bishop), piece(d-8, black, queen ),
     piece(e-8, black, king  ), piece(f-8, black, bishop),
